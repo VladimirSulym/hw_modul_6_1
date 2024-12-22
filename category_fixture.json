@@ -1,0 +1,26 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 8,
+    "fields": {
+        "name": "Насосы",
+        "description": null
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 9,
+    "fields": {
+        "name": "Емкости",
+        "description": null
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 10,
+    "fields": {
+        "name": "Мехочистка",
+        "description": null
+    }
+}
+]
