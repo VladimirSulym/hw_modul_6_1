@@ -1,0 +1,9 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 border-bottom box-shadow">
+    <a style="text-decoration: none; color: #dee2e8" href="{% url 'catalog:catalog'%}">
+        <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5></a>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:catalog' %}">Каталог</a>
+        <a class="p-2 btn btn-outline-success" href="{% url 'catalog:add_product' %}">+ Добавить товар</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
+    </nav>
+</div>

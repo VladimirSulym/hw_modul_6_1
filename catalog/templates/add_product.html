@@ -1,0 +1,44 @@
+{% extends "home.html" %}
+{% block title %}Добавление продукта{% endblock %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Добавление продукта</h1>
+</div>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <form class="col-6" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Название продукта</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Категория</label>
+                <select class="form-select" id="category" name="category">
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Описание</label>
+                <textarea class="form-control" rows="3" id="description" name="description"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Цена</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" aria-label="Сумма в рублях" id="price" name="price">
+                    <span class="input-group-text">₽</span>
+                </div>
+            </div>
+<!--            <div class="mb-3">-->
+<!--                <label for="image" class="form-label">Изображение</label>-->
+<!--                <div class="input-group mb-3">-->
+<!--                    <input type="file" class="form-control" id="image" name="image" title="Upload From PC" value="Upload From PC">-->
+<!--                </div>-->
+<!--            </div>-->
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
