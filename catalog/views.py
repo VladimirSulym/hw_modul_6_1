@@ -30,7 +30,9 @@ def add_product(request):
         price = request.POST['price']
         description = request.POST['description']
         category = request.POST['category']
+        # image = request.POST['image']
+        image = request.FILES.get('image')
         Product.objects.create(name=name, price=float(price), description=description,
-                               category=Category.objects.get(id=category))
+                               category=Category.objects.get(id=category), image = image)
         return render(request, 'add_success.html')
     return render(request, 'add_product.html', context={'categories': categories})
