@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}{{ blog.title }}{% endblock %}
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h2>{{blog.title}}</h2></li>
+                <li class="list-group-item">{{blog.content}}</li>
+                <li class="list-group-item">Признак публикации:
+                    {% if blog.active %}
+                        <span class="text-success"> Активна </span>
+                    {% else %}
+                        <span class="text-danger"> Не активна </span>
+                    {% endif %}
+                </li>
+                <li class="list-group-item text-secondary">Дата публикации: {{blog.created_at|date:"d M Y"}}<br>
+                    Количество просмотров: {{blog.views}}
+                </li>
+                {% if blog.preview.url is not True %}
+                <li class="list-group-item"><h5>Изображение:</h5><img src="{{blog.preview.url}}"></li>
+                {% else %}
+                <li class="list-group-item"><h5>Изображение:</h5>Отсутствует</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

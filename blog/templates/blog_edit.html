@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Редактирование блога{% endblock %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Редактирование блога</h1>
+</div>
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <form class="col-6" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
