@@ -1,8 +1,9 @@
-from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from .models import Blog
 from django.views.generic import ListView, DetailView, UpdateView
+
+from django.core.mail import send_mail
 
 
 class BlogListView(ListView):
@@ -22,6 +23,14 @@ class BlogDetailView(DetailView):
         obj = super().get_object()
         obj.views += 1
         obj.save()
+        if obj.views == 100:
+            send_mail(
+                'Повышенное число просмотров',
+                f'ПОЗДРАВЛЯЮ!! Блог {obj.title} просмотрен 100 раз!!',
+                'vormagic@yandex.ru',
+                ['vormagic@yandex.ru'],
+                fail_silently=False,
+            )
         return obj
 
 class BlogUpdateView(UpdateView):
