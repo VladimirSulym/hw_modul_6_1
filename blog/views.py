@@ -1,7 +1,10 @@
+import os
+
 from django.urls import reverse_lazy
 
 from .models import Blog
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView, TemplateView, DeleteView
+from django.views.generic.edit import CreateView
 
 from django.core.mail import send_mail
 
@@ -13,6 +16,11 @@ class BlogListView(ListView):
 
     def get_queryset(self):
         return Blog.objects.filter(active=True)
+
+    def get_context_object_name(self, object_list):
+        for obj in object_list:
+            print ('путь к изображению:', obj.preview if obj.preview else 'Нет изображения')
+        return super().get_context_object_name(object_list)
 
 class BlogDetailView(DetailView):
     model = Blog
@@ -41,3 +49,23 @@ class BlogUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('blog:blog_detail', kwargs={'pk': self.object.pk})
+
+class BlogCreateView(CreateView):
+    model = Blog
+    fields = ['title', 'content', 'preview', 'active']
+    template_name = 'add_blog.html'
+    context_object_name = 'blogs'
+    success_url = reverse_lazy('blog:add_blog_success')
+
+class AddBlogSuccessView(TemplateView):
+    template_name = 'add_blog_success.html'
+
+class BlogDeleteView(DeleteView):
+    model = Blog
+    template_name = 'blog_delete.html'
+    success_url = reverse_lazy('blog:blog_list')
+
+    def get_context_object_name(self, obj):
+        print ('путь к изображению:', obj.preview if obj.preview else 'Нет изображения')
+        os.remove(obj.preview.path) if obj.preview else None
+        return super().get_context_object_name(obj)
