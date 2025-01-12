@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 
 
@@ -30,3 +32,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+    def delete(self, *args, **kwargs):
+        print(f'Удаляемое изображение: {self.image}')
+        # Удаляем файл изображения, если он существует
+        if self.image and os.path.isfile(self.image.path):
+            print(f'Удаляем изображение: {self.image.path}')
+            os.remove(self.image.path)
+        else:
+            print('Изображение не найдено или уже удалено.')
+        # Вызываем стандартное поведение метода delete()
+        super().delete(*args, **kwargs)

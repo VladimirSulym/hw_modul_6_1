@@ -1,0 +1,28 @@
+{extends 'base.html'}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Описание продукта</h1>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h2>{{product.name}}</h2></li>
+                <li class="list-group-item"><h5>Категория:</h5>{{product.category}}</li>
+                <li class="list-group-item"><h5>Описание:</h5>{{product.description}}</li>
+                <li class="list-group-item"><h5>Цена: {{product.price|floatformat:2}}</h5></li>
+                <li class="list-group-item text-secondary">Дата публикации: {{product.created_at|date:"d M Y"}}, <br>Дата
+                    и время изменения: {{product.updated_at}}
+                </li>
+                {% if product.image.url is not True %}
+                <li class="list-group-item"><h5>Изображение:</h5><img src="{{product.image.url}}"></li>
+                {% else %}
+                <li class="list-group-item"><h5>Изображение:</h5>Отсутствует</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
