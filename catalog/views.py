@@ -1,7 +1,11 @@
+import os
+
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView, DetailView, TemplateView, DeleteView
+
+from catalog.forms import ProductForm
 from catalog.models import Product
 
 
@@ -27,13 +31,23 @@ class ContactsView(TemplateView):
 
 class AddProductView(CreateView):
     model = Product
-    fields = ['name', 'price', 'description', 'category', 'image']
+    # fields = ['name', 'price', 'description', 'category', 'image']
+    form_class = ProductForm
     template_name = 'add_product.html'
     context_object_name = 'categories'
     success_url = reverse_lazy('catalog:add_success')
 
 class AddSuccessView(TemplateView):
     template_name = 'add_success.html'
+
+class DeleteProductView(DeleteView):
+    model = Product
+    template_name = 'del_product.html'
+    success_url = reverse_lazy('catalog:catalog')
+
+    def form_valid(self, form):
+        os.remove(self.object.image.path) if self.object.image else None
+        return super().form_valid(form)
 
 
     # def post(self, request, *args, **kwargs):

@@ -17,10 +17,6 @@ class BlogListView(ListView):
     def get_queryset(self):
         return Blog.objects.filter(active=True)
 
-    def get_context_object_name(self, object_list):
-        for obj in object_list:
-            print ('путь к изображению:', obj.preview if obj.preview else 'Нет изображения')
-        return super().get_context_object_name(object_list)
 
 class BlogDetailView(DetailView):
     model = Blog
@@ -65,7 +61,6 @@ class BlogDeleteView(DeleteView):
     template_name = 'blog_delete.html'
     success_url = reverse_lazy('blog:blog_list')
 
-    def get_context_object_name(self, obj):
-        print ('путь к изображению:', obj.preview if obj.preview else 'Нет изображения')
-        os.remove(obj.preview.path) if obj.preview else None
-        return super().get_context_object_name(obj)
+    def form_valid(self, form):
+        os.remove(self.object.preview.path) if self.object.preview else None
+        return super().form_valid(form)
