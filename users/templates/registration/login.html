@@ -1,0 +1,22 @@
+{% extends "home.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="container-fluid d-flex h-100 justify-content-center align-items-center">
+    <div class="row">
+        <div class="display-4 p-5 text-center">Вход в приложение</div>
+        <form class="col-12" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!--            {{ form.non_field_errors }}-->
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <a class="p-2 btn btn-outline-info" href="{% url 'users:registr_user' %}">Регистрация</a>
+        </form>
+        <br/>
+    </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('id_username').classList.add('form-control');
+    document.getElementById('id_password').classList.add('form-control');
+</script>
+{% endblock %}

@@ -1,5 +1,6 @@
 import os
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
@@ -15,7 +16,7 @@ class CatalogView(ListView):
     context_object_name = 'products'
 
 
-class ProductInfoView(DetailView):
+class ProductInfoView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'product.html'
     context_object_name = 'product'
@@ -29,7 +30,7 @@ class ContactsView(TemplateView):
         message = request.POST['message']
         return HttpResponse(f"{name}, от Вас получено сообщений")
 
-class AddProductView(CreateView):
+class AddProductView(LoginRequiredMixin, CreateView):
     model = Product
     # fields = ['name', 'price', 'description', 'category', 'image']
     form_class = ProductForm
@@ -37,10 +38,10 @@ class AddProductView(CreateView):
     context_object_name = 'categories'
     success_url = reverse_lazy('catalog:add_success')
 
-class AddSuccessView(TemplateView):
+class AddSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'add_success.html'
 
-class DeleteProductView(DeleteView):
+class DeleteProductView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'del_product.html'
     success_url = reverse_lazy('catalog:catalog')
