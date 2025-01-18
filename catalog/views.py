@@ -57,7 +57,7 @@ class DeleteProductView(LoginRequiredMixin, DeleteView):
         if self.request.user.has_perm('catalog.can_unpublish_product'):
             os.remove(self.object.image.path) if self.object.image else None
             return super().form_valid(form)
-        return HttpResponseForbidden()
+        return HttpResponseForbidden('Вы не можете удалять продукт')
 
 
 class UpdateProductView(LoginRequiredMixin, UpdateView):
