@@ -14,10 +14,17 @@ class ProductForm(forms.ModelForm):
         super(ProductForm, self).__init__(*args, **kwargs)
 
         for field in self.fields.keys():
-            self.fields.get(field).widget.attrs.update({
-                'class': 'form-control',
-                'placeholder': f'Введите {field}'
-            })
+            if field != 'is_active':
+                self.fields.get(field).widget.attrs.update({
+                    'class': 'form-control',
+                    'placeholder': f'Введите {field}'
+                })
+            else:
+                self.fields.get(field).widget.attrs.update({
+                    'class': 'form-check-input',
+                    'type': "checkbox",
+                    'checked': self.instance.is_active
+                })
 
     def clean_price(self):
         price = self.cleaned_data.get('price')
@@ -33,7 +40,6 @@ class ProductForm(forms.ModelForm):
         name = name.lower()
         str_list = name.split()
         str_list.extend(description.split())
-        print('str_list =>', str_list)
         for word in str_list:
             if word in VALID_WORDS:
                 raise ValidationError(f'Имя или описание не должны содержать слово - {word}')

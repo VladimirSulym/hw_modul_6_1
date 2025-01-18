@@ -25,10 +25,18 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    is_active = models.BooleanField(default=False, verbose_name='Статус публикации')
+
     class Meta:
         ordering = ['name']
         verbose_name_plural = 'Продукты'
         verbose_name = 'Продукт'
+
+        permissions = [
+            ("can_unpublish_product", "Может изменять публикацию продукта"),
+        ]
+
+
 
     def __str__(self):
         return self.name

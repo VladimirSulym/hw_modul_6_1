@@ -1,9 +1,9 @@
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView
 
 from catalog.forms import ProductForm
@@ -15,11 +15,15 @@ class CatalogView(ListView):
     template_name = 'home.html'
     context_object_name = 'products'
 
+    def get_queryset(self):
+        return Product.objects.filter(is_active=True)
+
 
 class ProductInfoView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'product.html'
     context_object_name = 'product'
+
 
 class ContactsView(TemplateView):
     template_name = 'contacts.html'
@@ -30,6 +34,7 @@ class ContactsView(TemplateView):
         message = request.POST['message']
         return HttpResponse(f"{name}, от Вас получено сообщений")
 
+
 class AddProductView(LoginRequiredMixin, CreateView):
     model = Product
     # fields = ['name', 'price', 'description', 'category', 'image']
@@ -38,8 +43,10 @@ class AddProductView(LoginRequiredMixin, CreateView):
     context_object_name = 'categories'
     success_url = reverse_lazy('catalog:add_success')
 
+
 class AddSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'add_success.html'
+
 
 class DeleteProductView(LoginRequiredMixin, DeleteView):
     model = Product
@@ -47,8 +54,25 @@ class DeleteProductView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('catalog:catalog')
 
     def form_valid(self, form):
-        os.remove(self.object.image.path) if self.object.image else None
-        return super().form_valid(form)
+        if self.request.user.has_perm('catalog.can_unpublish_product'):
+            os.remove(self.object.image.path) if self.object.image else None
+            return super().form_valid(form)
+        return HttpResponseForbidden()
+
+
+class UpdateProductView(LoginRequiredMixin, UpdateView):
+    model = Product
+    template_name = 'add_product.html'
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:catalog')
+
+    def form_valid(self, form):
+        if not self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
+            return HttpResponseForbidden()
+        elif self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
+            return super().form_valid(form)
+        else:
+            return super().form_valid(form)
 
 
     # def post(self, request, *args, **kwargs):
