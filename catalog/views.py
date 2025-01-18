@@ -43,6 +43,10 @@ class AddProductView(LoginRequiredMixin, CreateView):
     context_object_name = 'categories'
     success_url = reverse_lazy('catalog:add_success')
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
+
 
 class AddSuccessView(LoginRequiredMixin, TemplateView):
     template_name = 'add_success.html'
@@ -54,10 +58,11 @@ class DeleteProductView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('catalog:catalog')
 
     def form_valid(self, form):
-        if self.request.user.has_perm('catalog.can_unpublish_product'):
+        if self.request.user == self.object.owner or self.request.user.has_perm('catalog.can_unpublish_product'):
             os.remove(self.object.image.path) if self.object.image else None
             return super().form_valid(form)
-        return HttpResponseForbidden('Вы не можете удалять продукт')
+        else:
+            return HttpResponseForbidden('Вы не владелец и не модератор и не можете удалять этот продукт')
 
 
 class UpdateProductView(LoginRequiredMixin, UpdateView):
@@ -67,13 +72,15 @@ class UpdateProductView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('catalog:catalog')
 
     def form_valid(self, form):
-        if not self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
-            return HttpResponseForbidden()
-        elif self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
-            return super().form_valid(form)
+        if self.request.user == self.object.owner:
+            if not self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
+                return HttpResponseForbidden('Вы не модератор и не можете редактировать статус публикации')
+            elif self.request.user.has_perm('catalog.can_unpublish_product') and form.instance.is_active == False:
+                return super().form_valid(form)
+            else:
+                return super().form_valid(form)
         else:
-            return super().form_valid(form)
-
+            return HttpResponseForbidden('Вы не владелец и не можете редактировать этот продукт')
 
     # def post(self, request, *args, **kwargs):
     #     name = request.POST['name']

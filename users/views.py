@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
+from config import settings
 from users.models import CustomUser
 from users.forms import RegistrUserForm
 
@@ -16,8 +17,8 @@ class RegistrUserView(CreateView):
         send_mail(
             'Успешная регистрация',
             f'ПОЗДРАВЛЯЮ!! Вы успешно зарегистрировались!',
-            f'{form.cleaned_data.get('email')}',
-            ['vormagic@yandex.ru'],
+            settings.EMAIL_HOST_USER,
+            [form.cleaned_data.get('email'), ],
             fail_silently=False,
         )
         return super().form_valid(form)

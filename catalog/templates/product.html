@@ -33,6 +33,7 @@
                         </div>
                     </form>
                 </li>
+                <li class="list-group-item"><h5>Владелец:</h5>{{product.owner}}</li>
                 {% if product.image.url is not True %}
                 <li class="list-group-item"><h5>Изображение:</h5><img src="{{product.image.url}}"></li>
                 {% else %}
