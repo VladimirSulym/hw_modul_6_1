@@ -4,8 +4,17 @@
     <nav class="ms-5">
         <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:catalog' %}">Каталог</a>
         <a class="p-2 btn btn-outline-success" href="{% url 'catalog:add_product' %}">+ Добавить товар</a>
-        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'blog:blog_list' %}">Блог</a>
         <a class="p-2 btn btn-outline-info" href="{% url 'blog:add_blog' %}">+ Добавить статью</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:contacts' %}">Контакты</a>
     </nav>
+            {% if user.is_authenticated %}
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button class="ms-1 p-2 btn btn-outline-danger" type="submit">Выйти</button>
+            <a class="ms-1 p-2 btn btn-success" href="{% url 'users:update_user' user.pk%}">Изменить пользователя</a>
+        </form>
+        {% else %}
+        <a class="ms-1 p-2 btn btn-success" href="{% url 'login' %}">Войти</a>
+        {% endif %}
 </div>
