@@ -2,6 +2,8 @@ import os
 
 from django.db import models
 
+from users.models import CustomUser
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name="Название")
@@ -25,10 +27,20 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    is_active = models.BooleanField(default=False, verbose_name='Статус публикации')
+    owner = models.ForeignKey(CustomUser, related_name='products', on_delete=models.PROTECT, verbose_name="Владелец", default=1)
+
+    # owner = models.ForeignKey(CustomUser, related_name='products', on_delete=models.SET_NULL, verbose_name="Владелец", blank=True, null=True)
+    # owner = models.ForeignKey(User, related_name='products', on_delete=models.PROTECT, verbose_name="Владелец", default=User.objects.get(id=1))
+
     class Meta:
         ordering = ['name']
         verbose_name_plural = 'Продукты'
         verbose_name = 'Продукт'
+
+        permissions = [
+            ("can_unpublish_product", "Может изменять публикацию продукта"),
+        ]
 
     def __str__(self):
         return self.name

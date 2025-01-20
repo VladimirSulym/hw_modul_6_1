@@ -11,4 +11,5 @@ urlpatterns = [
     path("add_product/", views.AddProductView.as_view(), name="add_product"),
     path("add_success/", views.AddSuccessView.as_view(), name="add_success"),
     path("delete_product/<int:pk>/", views.DeleteProductView.as_view(), name="delete_product"),
+    path("update_product/<int:pk>/", views.UpdateProductView.as_view(), name="update_product"),
 ]

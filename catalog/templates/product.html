@@ -1,9 +1,9 @@
 {% extends "home.html" %}
 {% block title %}{{ product.name }}{% endblock %}
 {% block content %}
-    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-        <h1 class="display-4">Описание продукта</h1>
-    </div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Описание продукта</h1>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -13,8 +13,27 @@
                 <li class="list-group-item"><h5>Описание:</h5>{{product.description}}</li>
                 <li class="list-group-item"><h5>Цена: {{product.price|floatformat:2}}</h5></li>
                 <li class="list-group-item text-secondary">Дата публикации: {{product.created_at|date:"d M Y"}}, <br>Дата
-                    и время изменения: {{product.updated_at}}
+                    и время изменения: {{product.updated_at}}<br>
                 </li>
+                <li class="list-group-item">
+                    <form method="post" class="row">
+                        <div class="form-check col-auto align-content-center">
+                            {% if product.is_active == True %}
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled
+                                   checked>
+                            {% else %}
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+                            {% endif %}
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Статус публикации
+                            </label>
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" class="btn btn-link text-decoration-none">Изменить статус</button>
+                        </div>
+                    </form>
+                </li>
+                <li class="list-group-item"><h5>Владелец:</h5>{{product.owner}}</li>
                 {% if product.image.url is not True %}
                 <li class="list-group-item"><h5>Изображение:</h5><img src="{{product.image.url}}"></li>
                 {% else %}
