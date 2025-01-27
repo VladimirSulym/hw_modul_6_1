@@ -1,6 +1,7 @@
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
@@ -18,8 +19,13 @@ class CatalogView(ListView):
 
     def get_queryset(self):
         filter_products = self.request.GET.get('category', 'Все категории')
-        products = catalog_get_from_cache()
-        return catalog_filter(products, filter_products)
+        queryset = cache.get('my_queryset')
+        if not queryset:
+            queryset = catalog_get_from_cache()
+            cache.set('my_queryset', queryset, 60 * 15)  # Кешируем данные на 15 минут
+        # return queryset
+        # products = catalog_get_from_cache()
+        return catalog_filter(queryset, filter_products)
 
 
     def get_context_data(self, **kwargs):
