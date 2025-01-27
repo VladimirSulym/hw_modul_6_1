@@ -7,7 +7,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView
 
 from catalog.forms import ProductForm
-from catalog.models import Product
+from catalog.models import Product, Category
+from catalog.services import catalog_get_from_cache, catalog_filter
 
 
 class CatalogView(ListView):
@@ -16,7 +17,15 @@ class CatalogView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(is_active=True)
+        filter_products = self.request.GET.get('category', 'Все категории')
+        products = catalog_get_from_cache()
+        return catalog_filter(products, filter_products)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class ProductInfoView(LoginRequiredMixin, DetailView):
