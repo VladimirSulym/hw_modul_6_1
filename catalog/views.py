@@ -1,13 +1,15 @@
 import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.cache import cache
 from django.http import HttpResponse, HttpResponseForbidden
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView, TemplateView, DeleteView
 
 from catalog.forms import ProductForm
-from catalog.models import Product
+from catalog.models import Product, Category
+from catalog.services import catalog_get_from_cache, catalog_filter
 
 
 class CatalogView(ListView):
@@ -16,7 +18,20 @@ class CatalogView(ListView):
     context_object_name = 'products'
 
     def get_queryset(self):
-        return Product.objects.filter(is_active=True)
+        filter_products = self.request.GET.get('category', 'Все категории')
+        queryset = cache.get('my_queryset')
+        if not queryset:
+            queryset = catalog_get_from_cache()
+            cache.set('my_queryset', queryset, 60 * 15)  # Кешируем данные на 15 минут
+        # return queryset
+        # products = catalog_get_from_cache()
+        return catalog_filter(queryset, filter_products)
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
 
 
 class ProductInfoView(LoginRequiredMixin, DetailView):

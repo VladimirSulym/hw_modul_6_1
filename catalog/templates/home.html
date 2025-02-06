@@ -14,8 +14,23 @@
     <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
         продать</p>
 </div>
-<div class="container">
 
+<div class="container">
+    <div class="form-control">
+        <form class="row row-cols-lg-auto align-items-center" method="get" action="{% url 'catalog:catalog' %}">
+            <div class="col-12">
+                <select id="inputState" class="form-select" name="category">
+                    <option selected>Все категории</option>
+                    {% for category in categories %}
+                    <option>{{category}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-outline-success">Показать</button>
+            </div>
+        </form>
+    </div>
     <div class="row text-center">
         {% for product in products %}
         <div class="col-3">
@@ -30,12 +45,11 @@
                     {% else %}
                     <div style="height: 300px; align-content: center" class="text-secondary">Нет фото</div>
                     {% endif %}
-                    <!--                        <h1 class="card-title pricing-card-title">$ 140</h1>-->
                     <p>{{product.description|truncatechars:100}}</p>
                     <a class="btn btn-lg btn-block btn-outline-primary" href="{% url 'catalog:product' product.pk %}">Подробнее</a>
                     {% if user == product.owner %}
-                        <a class="btn btn-outline-danger btn-sm" href="{% url 'catalog:delete_product' product.pk %}">Удалить</a>
-                        <a class="btn btn-link" href="{% url 'catalog:update_product' product.pk %}">Изменить</a>
+                    <a class="btn btn-outline-danger btn-sm" href="{% url 'catalog:delete_product' product.pk %}">Удалить</a>
+                    <a class="btn btn-link" href="{% url 'catalog:update_product' product.pk %}">Изменить</a>
                     {% endif %}
                 </div>
             </div>
